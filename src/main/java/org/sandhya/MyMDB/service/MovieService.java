@@ -236,9 +236,7 @@ public class MovieService {
 		}
 		movieCastDao.addActorList(movieId, actorIdList);
 		
-		
-		String actorIdStr = actorIdList.toString().replaceAll("\\[", "").replaceAll("\\]", "");
-		if(MyMDBHelper.isNotEmpty(actorIdStr)) {
+		if(MyMDBHelper.isNotEmpty(actorIdList) && actorIdList.size() > 0) {
 			try {
 			//Map<String,Object> solrActorDetails = new HashMap<String, Object>();
 			JSONObject json = new JSONObject();
