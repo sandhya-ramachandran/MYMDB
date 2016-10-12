@@ -348,6 +348,10 @@ public class MovieService {
 		if(comment.getVote() != -1 && comment.getVote() != 0 && comment.getVote() != 1 ) {
 			throw new MyMDBBadRequestException("Vote can either be a 1 (like), 0 (neutral), -1(dislike)"); 
 		}
+		
+		if(comment.getComments().length() > 999 ) {
+			throw new MyMDBBadRequestException("Comment should not be more than 1000 characters");
+		}
 		//comment.setRatingsId(reviewId);
 		reviewCommentsDao.save(comment);
 		
@@ -366,6 +370,10 @@ public class MovieService {
 		User user = userDao.getById(rating.getUserId());
 		if (MyMDBHelper.isEmpty(user)) {
 			throw new MyMDBBadRequestException("User does not exist");
+		}
+		
+		if(rating.getReview().length() > 999 ) {
+			throw new MyMDBBadRequestException("Review comment should not be more than 1000 characters");
 		}
 		rating.setMovieId(movie.getId());
 		boolean isNew = ratingsDao.save(rating);
