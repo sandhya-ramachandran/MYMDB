@@ -45,6 +45,8 @@ public class MovieDao {
 				Number unId = keyHolder.getKey();
 				movie.setId(unId.intValue());
 				return unId.intValue();
+			} catch(org.springframework.dao.DuplicateKeyException e) {
+				return -1;
 			} catch (Exception e) {
 				e.printStackTrace();
 				return -1;

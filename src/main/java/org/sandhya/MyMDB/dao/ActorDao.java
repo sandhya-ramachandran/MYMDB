@@ -23,28 +23,31 @@ public class ActorDao {
 	@Autowired NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	public int save(final Actor actor) {
-		
+
 		if (actor.getId() == 0) {
-			try{
-			KeyHolder keyHolder = new GeneratedKeyHolder();
-			int update = jdbcTemplate.update(new PreparedStatementCreator() {
-				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-					PreparedStatement ps = connection.prepareStatement(
-					INSERT_SQL, new String[] { "id" });
-					ps.setString(1, actor.getName());
-					return ps;
-				}
-			}, keyHolder);
-			Number unId = keyHolder.getKey();
-			actor.setId(unId.intValue());
-		} catch (Exception e) {
-			if (e.getLocalizedMessage().indexOf("Duplicate entry") > -1) {
-				String sql = "select id from actor where name='"+ actor.getName() + "'";
-				actor.setId(jdbcTemplate.queryForObject(sql,Integer.class));
-			} else{
-				e.printStackTrace();
+			try {
+				KeyHolder keyHolder = new GeneratedKeyHolder();
+				int update = jdbcTemplate.update(
+						new PreparedStatementCreator() {
+							public PreparedStatement createPreparedStatement(
+									Connection connection) throws SQLException {
+								PreparedStatement ps = connection
+										.prepareStatement(INSERT_SQL,
+												new String[] { "id" });
+								ps.setString(1, actor.getName());
+								return ps;
+							}
+						}, keyHolder);
+				Number unId = keyHolder.getKey();
+				actor.setId(unId.intValue());
+			} catch (org.springframework.dao.DuplicateKeyException e) {
+				String sql = "select id from actor where name= ?";
+				actor.setId(jdbcTemplate.queryForObject(sql,
+						new Object[] { actor.getName() }, Integer.class));
+
+			} catch (Exception e) {
+				return -1;
 			}
-		}
 		} else {
 			return actor.getId();
 		}

@@ -19,6 +19,7 @@ import org.sandhya.MyMDB.dao.ReviewCommentsDao;
 import org.sandhya.MyMDB.dao.UserDao;
 import org.sandhya.MyMDB.exce.MyMDBDbException;
 import org.sandhya.MyMDB.exception.MyMDBBadRequestException;
+import org.sandhya.MyMDB.exception.MyMDBCustomException;
 import org.sandhya.MyMDB.model.Actor;
 import org.sandhya.MyMDB.model.Movie;
 import org.sandhya.MyMDB.model.Ratings;
@@ -47,7 +48,7 @@ public class MovieService {
 	@Autowired SolrHelper solrHelper;
 	
 	@Transactional
-	public int saveMovieDetails(Map<String,Object> movieDetails) throws MyMDBBadRequestException {
+	public int saveMovieDetails(Map<String,Object> movieDetails) throws MyMDBBadRequestException, MyMDBCustomException {
 		
 		Movie movie = new Movie();
 		
@@ -91,6 +92,9 @@ public class MovieService {
 		}
 		
 		int movieId = movieDao.save(movie);
+		if(movieId <= 0) {
+			throw new MyMDBCustomException("Failed to save movie details");
+		}
 		List<String> genreIdList = Arrays.asList(genreId.split(","));
 		movieGenreDao.addGenreList(movieId, genreIdList);
 		try {
@@ -215,7 +219,8 @@ public class MovieService {
 				Actor newActor = new Actor();
 				newActor.setName(name);
 				int newId = actorDao.save(newActor);
-				actorIdList.add(newId);
+				if(newId > 0)
+					actorIdList.add(newId);
 			}
 		} 
 		else {

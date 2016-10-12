@@ -26,28 +26,30 @@ public class GenreDao {
 	@Autowired  NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	public int save(final Genre genre) {
-		
+
 		if (genre.getId() == 0) {
-			try{
-			KeyHolder keyHolder = new GeneratedKeyHolder();
-			int update = jdbcTemplate.update(new PreparedStatementCreator() {
-				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-					PreparedStatement ps = connection.prepareStatement(
-					INSERT_SQL, new String[] { "id" });
-					ps.setString(1, genre.getName());
-					return ps;
-				}
-			}, keyHolder);
-			Number unId = keyHolder.getKey();
-			genre.setId(unId.intValue());
-		} catch (Exception e) {
-			if (e.getLocalizedMessage().indexOf("Duplicate entry") > -1) {
-				String sql = "select id from genre_master where name='"+ genre.getName() + "'";
-				genre.setId(jdbcTemplate.queryForObject(sql,Integer.class));
-			} else{
-				e.printStackTrace();
+			try {
+				KeyHolder keyHolder = new GeneratedKeyHolder();
+				int update = jdbcTemplate.update(
+						new PreparedStatementCreator() {
+							public PreparedStatement createPreparedStatement(
+									Connection connection) throws SQLException {
+								PreparedStatement ps = connection
+										.prepareStatement(INSERT_SQL,
+												new String[] { "id" });
+								ps.setString(1, genre.getName());
+								return ps;
+							}
+						}, keyHolder);
+				Number unId = keyHolder.getKey();
+				genre.setId(unId.intValue());
+			} catch (org.springframework.dao.DuplicateKeyException e) {
+				String sql = "select id from genre_master where name=?";
+				genre.setId(jdbcTemplate.queryForObject(sql,
+						new Object[] { genre.getName() }, Integer.class));
+			} catch (Exception e) {
+				return -1;
 			}
-		}
 		} else {
 			return genre.getId();
 		}
