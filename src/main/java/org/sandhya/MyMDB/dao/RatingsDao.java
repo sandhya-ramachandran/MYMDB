@@ -70,7 +70,7 @@ public class RatingsDao {
 	}
 	
 	public List<Map<String,Object>> getMovieReviews(int movieId, int offset, int limit ) {
-		String sql = "select u.name, r.review from ratings r inner join user u on r.user_id = u.id where r.movie_id = ? limit ? offset ?";
+		String sql = "select u.name, r.review, r.id from ratings r inner join user u on r.user_id = u.id where r.movie_id = ? limit ? offset ?";
 		List<Map<String,Object>> reviewList = jdbcTemplate.queryForList(sql, new Object[] {movieId, limit, offset});
 		return reviewList;
 	}

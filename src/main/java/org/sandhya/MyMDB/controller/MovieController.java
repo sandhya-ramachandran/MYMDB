@@ -297,7 +297,7 @@ public class MovieController {
 		 
 	}
 	
-	@RequestMapping(value="api/movie/review/comment", method = RequestMethod.POST)
+	@RequestMapping(value="api/movies/review/comment", method = RequestMethod.POST)
 	@ResponseBody ResponseEntity<Map<String, Object>> comment( //@PathVariable ("id") int reviewId,
 			@RequestBody ReviewComments comment,HttpServletResponse response,HttpSession session) { 
 		try {

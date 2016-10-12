@@ -331,6 +331,11 @@ public class MovieService {
 		if (comment.getRatingsId() <=0) {
 			throw new MyMDBBadRequestException("review id should be a positive integer");
 		}
+		
+		User user = userDao.getById(comment.getUserId());
+		if (MyMDBHelper.isEmpty(user)) {
+			throw new MyMDBBadRequestException("User does not exist");
+		}
 		Ratings review = ratingsDao.getById(comment.getRatingsId());
 		if(MyMDBHelper.isEmpty(review)) {
 			throw new MyMDBBadRequestException("review does not exist");
@@ -338,6 +343,10 @@ public class MovieService {
 		
 		if(MyMDBHelper.isEmpty(comment.getComments()) && comment.getVote() == 0 ) {
 			throw new MyMDBBadRequestException("no comments or vote"); 
+		}
+		
+		if(comment.getVote() != -1 && comment.getVote() != 0 && comment.getVote() != 1 ) {
+			throw new MyMDBBadRequestException("Vote can either be a 1 (like), 0 (neutral), -1(dislike)"); 
 		}
 		//comment.setRatingsId(reviewId);
 		reviewCommentsDao.save(comment);
@@ -353,12 +362,14 @@ public class MovieService {
 		if(MyMDBHelper.isEmpty(rating.getReview()) && rating.getRating() == 0) {
 			throw new MyMDBBadRequestException("no review or rating"); 
 		}
+		
+		User user = userDao.getById(rating.getUserId());
+		if (MyMDBHelper.isEmpty(user)) {
+			throw new MyMDBBadRequestException("User does not exist");
+		}
 		rating.setMovieId(movie.getId());
 		boolean isNew = ratingsDao.save(rating);
 		//Update SOLR
-		/*Map<String,Object> movieRaterDetails = new HashMap<String, Object>();
-		movieRaterDetails.put("id",rating.getMovieId() );
-		movieRaterDetails.put("raters", rating.getUserId());*/
 		try {
 			if(isNew) {
 				JSONObject json = new JSONObject();
