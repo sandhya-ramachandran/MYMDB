@@ -56,7 +56,7 @@ public class MovieController {
 		 
 	}
 	
-	@RequestMapping(value="api/movies/{id}", method = RequestMethod.POST)
+	@RequestMapping(value="api/movies/{id}", method = RequestMethod.PUT)
 	@ResponseBody ResponseEntity<Map<String, Object>> editMovie(
 			@RequestBody Map<String, Object> movieDetailsParams, @PathVariable ("id") int id,
 			HttpServletRequest req, HttpServletResponse response,
@@ -76,7 +76,7 @@ public class MovieController {
 		 
 	}
 	
-	@RequestMapping(value="api/movie/{id}", method = RequestMethod.GET)
+	@RequestMapping(value="api/movies/{id}", method = RequestMethod.GET)
 	@ResponseBody ResponseEntity<Map<String,Object>> getMovie(
 			@PathVariable ("id") int id,
 			HttpServletRequest req, HttpServletResponse response,
@@ -236,7 +236,7 @@ public class MovieController {
 		 
 	}
 	
-	@RequestMapping(value="api/movies/{id}/review", method = RequestMethod.POST)
+	@RequestMapping(value="api/movies/{id}/reviews", method = RequestMethod.POST)
 	@ResponseBody ResponseEntity<Map<String, Object>> rateReviewMovie(
 			@RequestBody Ratings rating, @PathVariable ("id") int id,
 			HttpServletRequest req, HttpServletResponse response,
@@ -256,7 +256,7 @@ public class MovieController {
 		 
 	}
 	
-	@RequestMapping(value="api/movie/ratings/{id}", method = RequestMethod.GET)
+	@RequestMapping(value="api/movies//{id}/ratings", method = RequestMethod.GET)
 	@ResponseBody ResponseEntity<Map<String, Object>> getMovieRatings( @PathVariable ("id") int id,
 			HttpServletRequest req, HttpServletResponse response,
 			HttpSession session) { 
@@ -276,7 +276,7 @@ public class MovieController {
 		 
 	}
 	
-	@RequestMapping(value="api/movie/reviews/{id}", method = RequestMethod.GET)
+	@RequestMapping(value="api/movies/{id}/reviews", method = RequestMethod.GET)
 	@ResponseBody ResponseEntity<Map<String, Object>> getMovieReviews( @PathVariable ("id") int id,
 			@RequestParam("offset") int offset, @RequestParam("limit") int limit,
 			HttpServletRequest req, HttpServletResponse response,

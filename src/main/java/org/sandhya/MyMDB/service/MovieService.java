@@ -124,8 +124,8 @@ public class MovieService {
 			throw new MyMDBBadRequestException("movie does not exist");
 		}
 		
-		if(MyMDBHelper.isNotEmpty(movieDetails.get("title"))) {
-			String title = String.valueOf(movieDetails.get("title"));
+		if(MyMDBHelper.isNotEmpty(movieDetails.get("Title"))) {
+			String title = String.valueOf(movieDetails.get("Title"));
 			if(!title.equalsIgnoreCase(movie.getTitle())) {
 				movie.setTitle(title);
 			}
