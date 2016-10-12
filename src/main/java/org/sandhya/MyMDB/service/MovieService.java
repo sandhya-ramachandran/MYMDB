@@ -329,11 +329,11 @@ public class MovieService {
 		return movie;
 	}
 
-	public void voteCommentOnReview(ReviewComments comment, int reviewId) throws MyMDBBadRequestException{
-		if (reviewId <=0) {
+	public void voteCommentOnReview(ReviewComments comment) throws MyMDBBadRequestException{
+		if (comment.getRatingsId() <=0) {
 			throw new MyMDBBadRequestException("review id should be a positive integer");
 		}
-		Ratings review = ratingsDao.getById(reviewId);
+		Ratings review = ratingsDao.getById(comment.getRatingsId());
 		if(MyMDBHelper.isEmpty(review)) {
 			throw new MyMDBBadRequestException("review does not exist");
 		}
@@ -341,7 +341,7 @@ public class MovieService {
 		if(MyMDBHelper.isEmpty(comment.getComments()) && comment.getVote() == 0 ) {
 			throw new MyMDBBadRequestException("no comments or vote"); 
 		}
-		comment.setRatingsId(reviewId);
+		//comment.setRatingsId(reviewId);
 		reviewCommentsDao.save(comment);
 		
 	}

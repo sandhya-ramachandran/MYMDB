@@ -297,12 +297,12 @@ public class MovieController {
 		 
 	}
 	
-	@RequestMapping(value="api/movie/review/{id}/comment", method = RequestMethod.POST)
-	@ResponseBody ResponseEntity<Map<String, Object>> comment( @PathVariable ("id") int reviewId,
+	@RequestMapping(value="api/movie/review/comment", method = RequestMethod.POST)
+	@ResponseBody ResponseEntity<Map<String, Object>> comment( //@PathVariable ("id") int reviewId,
 			@RequestBody ReviewComments comment,HttpServletResponse response,HttpSession session) { 
 		try {
 			Map<String, Object> apiResponse = new HashMap<String, Object>();
-			movieService.voteCommentOnReview(comment, reviewId);
+			movieService.voteCommentOnReview(comment);
 			apiResponse.put(MyMDBConstants.JSON_KEY_STATUS, MyMDBConstants.STATUS_SUCCESS);
 			return new ResponseEntity<Map<String,Object>>(apiResponse, HttpStatus.OK);
 		} catch (Exception e) {

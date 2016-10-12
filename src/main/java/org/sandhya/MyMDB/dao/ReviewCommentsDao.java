@@ -21,6 +21,8 @@ public class ReviewCommentsDao {
 	
 	public final String INSERT_SQL = "INSERT INTO review_comments(ratings_id,user_id,vote,comments) values (?,?,?,?)"; 
 	public final String UPDATE_SQL	= "UPDATE review_comments set comments = ? , vote = ? where id = ?";
+	public final String UPDATE_DUPLICATE_SQL = "UPDATE review_comments set vote = ? , comments = ? where ratings_id = ? and user_id = ?";
+
 	@Autowired
 	public JdbcTemplate jdbcTemplate;
 	
@@ -41,6 +43,11 @@ public class ReviewCommentsDao {
 			}, keyHolder);
 			Number unId = keyHolder.getKey();
 			reviewComments.setId(unId.intValue());
+			}catch(org.springframework.dao.DuplicateKeyException e) {
+					jdbcTemplate.update(UPDATE_DUPLICATE_SQL,
+							new Object[] { 
+									reviewComments.getVote(),reviewComments.getComments(), 
+									reviewComments.getRatingsId(), reviewComments.getUserId() });
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 	;
