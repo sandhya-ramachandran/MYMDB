@@ -256,7 +256,7 @@ public class MovieController {
 		 
 	}
 	
-	@RequestMapping(value="api/movies//{id}/ratings", method = RequestMethod.GET)
+	@RequestMapping(value="api/movies/{id}/ratings", method = RequestMethod.GET)
 	@ResponseBody ResponseEntity<Map<String, Object>> getMovieRatings( @PathVariable ("id") int id,
 			HttpServletRequest req, HttpServletResponse response,
 			HttpSession session) { 
