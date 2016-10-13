@@ -1,0 +1,119 @@
+High-level design
+------------------
+
+
+Following are the entities that are part of the MRS
+
+1. User - contains user name and email to describe the user.
+2. Movie - contains details of the movie such as - title, imdb_id, genre. imdb id should be unique.
+3. Genre Master - A fixed list of allowed genres. Currently no API to add new Genre
+4. Actor Master - List of all the actors that are part of the cast of the existing movies
+5. Movie-Cast - stores the association between movies and actors. One movie can have multiple actors
+5. Movie-Genre - stores the associate between movies and genre. A movie can be par of multiple genres
+6. Ratings - Details of what the the user has rated / reviewed for a movie. 
+7. Comments - Details of user's comments and votes for the review of a movie.
+
+Note: I have not implemented an authentication/authorization mechanism. It is assumed right now, that wherever the user
+information is required, it is provided as part of the input JSON.
+
+Following are the rest end points 
+----------------------------------
+
+api/movies - POST 
+------------------------------
+Add a new movie. If a movie with imdb id is present it throws and error.
+Takes genre as a comma separated string input. Updates the movie-genre table with only those genres that exist in the system.
+
+api/movies/{id} - PUT
+------------------------------
+Updates the movie and genre details of the movie with the given id.
+If the movie with given id is not present, it throws an error.
+The genre details are completely overwritten. It does not append to the genre list. 
+
+api/movies/{id} - GET
+------------------------------
+Gets details of the movie for a given movie id
+Details include title, release date, imdb_id and genres
+
+api/users/ - POST
+------------------------------
+API to add user. User details include name and email id. Email id is unique. If user with email exists, then error is thrown
+
+api/users/{id} - PUT
+--------------------
+Edits name and email for the user of a given id.  If user with given id is not present, then and error is thrown.
+
+api/users/{id} - GET
+---------------------
+Retrieve the user information for a give id. If user with given id is not present, then and error is thrown.
+
+api/movies/{id}/cast - POST
+-----------------------------
+API to store the cast / actor details for a movie with the given id.
+Takes a list of actor names as input. This API also appends the actor information to the already existing actor information for a movie
+
+For each element in the list
+	If the actor exists in the actor master table, then that id is re-used.
+	If the actor does not exist, then a new actor is created and id of the newly created actor is used. 
+
+api/movies/{id}/cast - PUT
+------------------------------
+API to update the cast of a movie. Takes a list of actor names as input.
+It over-writes the entire existing cast of a movie with the provided list.
+
+
+api/movies/{id}/cast - GET
+------------------------------
+Get the cast information of a movie. Returns a list of actor information ( name and master id ). 
+
+
+api/movies/{id}/reviews - POST
+------------------------------
+API to post a review and/or rate  a movie. 
+The input JSON expects a user-id to be present. If the user-id is not present, or if a user with that id is not present, 
+then an error is thrown.
+If review for a given movie by the user exists, then that review is updated
+
+api/movies/{id}/ratings - GET
+------------------------------
+API to get ratings for a movie. Output contains the following info
+- max rating
+- min rating
+- avg rating
+- total number of ratings
+
+api/movies/{id}/reviews - GET
+---------------------------------
+API to obtain the paginated list of reviews for a movie.
+Returns the total number of reviews as well, to enable further pagination
+
+api/movies/review/comment - POST
+---------------------------------
+APU to enable a user to comment / vote a review for a movie.
+The input JSON expects a user-id to be present. If the user-id is not present, or if a user with that id is not present, 
+then an error is thrown.  
+If comment for a given review by the user exists, then that comment / vote is updated
+
+api/populate - POST
+------------------------------
+additional API written to enable DB data population based on list from imbdb database. 
+
+
+api/recommendation/users/{id}
+------------------------------
+API to get movie recommendation for a user. 
+The recommendation makes use of SOLR. 
+
+SOLR contains all the movie information ( name, title, id, imdb_id, genre_list, actor_list and the list of users 
+who have rated/reviewed this movie. 
+
+This document is created when movie is saved in the DB and updated when the cast information is provided.
+It is also updated when user rates/ reviews a movie.
+
+When the API for recommendation is invoked, RDBMS is queried to find the list of genres and actors of movie that the user has reviewed.
+This list is sorted in the descending order of the number of movies of that genre or the number of actors that the user has reviewed.
+This information is used to create a SOLR query, where the clauses are given a boost per the count. And additional clause is added to eliminate
+docs/movies that the user has viewed. This ensures that the document which having the popular genre and/or the popular actor is 
+rated high.
+
+  
