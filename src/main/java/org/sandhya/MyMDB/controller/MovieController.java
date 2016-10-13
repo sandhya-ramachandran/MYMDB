@@ -96,65 +96,7 @@ public class MovieController {
 		}
 	}
 	
-	@RequestMapping(value="api/users/", method = RequestMethod.POST)
-	@ResponseBody ResponseEntity<Map<String, Object>> addUser(
-			@RequestBody User userDetails,
-			HttpServletRequest req, HttpServletResponse response,
-			HttpSession session) { 
-		
-		try {
-			Map<String, Object> apiResponse = new HashMap<String, Object>();
-			int userId = movieService.addUser(userDetails);
-			apiResponse.put(MyMDBConstants.JSON_KEY_STATUS, MyMDBConstants.STATUS_SUCCESS);
-			apiResponse.put(MyMDBConstants.JSON_KEY_USER_ID, userId);
-			return new ResponseEntity<Map<String,Object>>(apiResponse, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			MyMDBExceptionHandler handler = new MyMDBExceptionHandler();
-			return handler.handleExceptionAsEntity(e);
-			
-		}
-	}
 	
-	@RequestMapping(value="api/users/{id}", method = RequestMethod.PUT)
-	@ResponseBody ResponseEntity<Map<String, Object>> editUser(
-			@RequestBody User userDetails, @PathVariable ("id") int id,
-			HttpServletRequest req, HttpServletResponse response,
-			HttpSession session) { 
-		
-		try {
-			Map<String, Object> apiResponse = new HashMap<String, Object>();
-			int userId = movieService.editUser(userDetails, id);
-			apiResponse.put(MyMDBConstants.JSON_KEY_STATUS, MyMDBConstants.STATUS_SUCCESS);
-			apiResponse.put(MyMDBConstants.JSON_KEY_USER_ID, userId);
-			return new ResponseEntity<Map<String,Object>>(apiResponse, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			MyMDBExceptionHandler handler = new MyMDBExceptionHandler();
-			return handler.handleExceptionAsEntity(e);
-			
-		}
-	}
-	
-	@RequestMapping(value="api/users/{id}", method = RequestMethod.GET)
-	@ResponseBody ResponseEntity<Map<String, Object>> getUser(
-			@PathVariable ("id") int id,
-			HttpServletRequest req, HttpServletResponse response,
-			HttpSession session) { 
-		
-		try {
-			Map<String, Object> apiResponse = new HashMap<String, Object>();
-			User user = movieService.getUserDetails(id);
-			apiResponse.put(MyMDBConstants.JSON_KEY_STATUS, MyMDBConstants.STATUS_SUCCESS);
-			apiResponse.put(MyMDBConstants.JSON_KEY_USER, user);
-			return new ResponseEntity<Map<String,Object>>(apiResponse, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			MyMDBExceptionHandler handler = new MyMDBExceptionHandler();
-			return handler.handleExceptionAsEntity(e);
-			
-		}
-	}
 	
 	@RequestMapping(value="api/recommendation/users/{id}", method = RequestMethod.GET)
 	@ResponseBody ResponseEntity<Map<String, Object>> getMovieRecommendationUser(
